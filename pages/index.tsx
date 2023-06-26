@@ -1,7 +1,8 @@
+import { Typography } from "@mui/material"
 
  const HomePage = () => {
   return (
-    <div>Hola mundo</div>
+    <Typography variant="h1" color='primary'>Hola mundo</Typography>
   )
 }
 
