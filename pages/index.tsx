@@ -1,8 +1,11 @@
+import { Layout } from "@/components/layouts"
 import { Typography } from "@mui/material"
 
  const HomePage = () => {
   return (
-    <Typography variant="h1" color='primary'>Hola mundo</Typography>
+    <Layout>
+      <Typography variant="h2" color='primary'>Hola mundo</Typography>
+    </Layout>
   )
 }
 
