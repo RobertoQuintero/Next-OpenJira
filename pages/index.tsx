@@ -1,5 +1,6 @@
 import { Layout } from "@/components/layouts"
-import { Card, CardHeader, Grid, Typography } from "@mui/material"
+import { EntryList } from "@/components/ui"
+import { Card, CardContent, CardHeader, Grid, Typography } from "@mui/material"
 
  const HomePage = () => {
   return (
@@ -9,18 +10,21 @@ import { Card, CardHeader, Grid, Typography } from "@mui/material"
         <Grid item xs={12} sm={4}>
           <Card sx={{height:'calc(100vh - 100px)'}}>
             <CardHeader title='Pendientes'/>
+              <EntryList/>
           </Card>
         </Grid>
 
         <Grid item xs={12} sm={4}>
           <Card sx={{height:'calc(100vh - 100px)'}}>
             <CardHeader title='En Progreso'/>
+            <EntryList/>
           </Card>
         </Grid>
 
         <Grid item xs={12} sm={4}>
           <Card sx={{height:'calc(100vh - 100px)'}}>
             <CardHeader title='Completadas'/>
+            <EntryList/>
           </Card>
         </Grid>
 
