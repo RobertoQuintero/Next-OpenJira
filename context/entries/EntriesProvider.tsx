@@ -8,7 +8,7 @@ interface Props{
 }
 
 export interface EntriesState{
-  entries:Entry[]
+  entries:Entry[],
 }
 
 const Entries_INITIAL_STATE:EntriesState={
@@ -31,15 +31,35 @@ const Entries_INITIAL_STATE:EntriesState={
       status:'finished',
       createdAt:Date.now()-2000000
     },
-  ]
+  ],
+  
 }
 
 export const EntriesProvider = ({children}:Props) => {
   const [state, dispatch] = useReducer(entriesReducer, Entries_INITIAL_STATE)
 
+  const addNewEntry=(description:string)=>{
+    const newEntry:Entry={
+      _id: uuidv4(),
+      description,
+      createdAt: Date.now(),
+      status: 'pending'
+    }
+    dispatch({type:'[Entry] - Add-Entry',payload:newEntry})
+  }
+
+  const setIsAddingEntry=(isAdding:boolean)=>{
+    dispatch({
+      type:'[Entry] - IsAdding-Entry',payload:isAdding
+    })
+  }
+
   return (
     <EntriesContex.Provider value={{
-      ...state
+      ...state,
+      //métodos
+      addNewEntry,
+     
     }}>
       {children}
     </EntriesContex.Provider>

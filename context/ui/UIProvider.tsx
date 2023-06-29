@@ -6,11 +6,13 @@ interface Props{
 }
 
 export interface UIState{
-  sideMenuOpen:boolean
+  sideMenuOpen:boolean,
+  isAddingEntry:boolean
 }
 
 const UI_INITIAL_STATE:UIState={
-  sideMenuOpen:false
+  sideMenuOpen:false,
+  isAddingEntry:false
 }
 
 export const UIProvider = ({children}:Props) => {
@@ -23,11 +25,18 @@ export const UIProvider = ({children}:Props) => {
     dispatch({type:'UI - Close Sidebar'})
   }
 
+  const setIsAddingEntry=(isAdding:boolean)=>{
+    dispatch({
+      type:'UI - IsAdding-Entry',payload:isAdding
+    })
+  }
+
   return (
     <UIContex.Provider value={{
       ...state,
       openSideMenu,
-      closeSideMenu
+      closeSideMenu,
+      setIsAddingEntry
     }}>
       {children}
     </UIContex.Provider>
