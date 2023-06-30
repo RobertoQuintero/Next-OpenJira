@@ -54,11 +54,16 @@ export const EntriesProvider = ({children}:Props) => {
     })
   }
 
+  const updateEntry=(entry:Entry)=>{
+    dispatch({type:'[Entry] - Entry-Updated',payload:entry})
+  }
+
   return (
     <EntriesContex.Provider value={{
       ...state,
       //métodos
       addNewEntry,
+      updateEntry
      
     }}>
       {children}
