@@ -3,6 +3,7 @@ import { EntryList, NewEntry } from "@/components/ui"
 import { Card, CardContent, CardHeader, Grid, Typography } from "@mui/material"
 
  const HomePage = () => {
+  console.log(process.env.NEXT_PUBLIC_CLIENT_KEY)
   return (
     <Layout title='Home - OpenJira'>
       <Grid container spacing={2}>
