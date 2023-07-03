@@ -1,7 +1,7 @@
-import React, { useReducer } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import { EntriesContex, entriesReducer } from './'
 import { Entry } from '@/interfaces'
-import {v4 as uuidv4} from 'uuid'
+import { entriesApi } from '@/apis'
 
 interface Props{
   children:JSX.Element|JSX.Element[]
@@ -19,25 +19,31 @@ const Entries_INITIAL_STATE:EntriesState={
 export const EntriesProvider = ({children}:Props) => {
   const [state, dispatch] = useReducer(entriesReducer, Entries_INITIAL_STATE)
 
-  const addNewEntry=(description:string)=>{
-    const newEntry:Entry={
-      _id: uuidv4(),
-      description,
-      createdAt: Date.now(),
-      status: 'pending'
+  const addNewEntry=async(description:string)=>{
+    const{data}= await entriesApi.post<Entry>('/entries',{description})
+
+    dispatch({type:'[Entry] - Add-Entry',payload:data})
+  }
+
+  const updateEntry=async(entry:Entry)=>{
+    const {_id,description,status}=entry
+    try {
+      const {data}=await entriesApi.put<Entry>(`/entries/${_id}`,{description,status})
+
+      dispatch({type:'[Entry] - Entry-Updated',payload:data})
+    } catch (error) {
+      console.log({error})
     }
-    dispatch({type:'[Entry] - Add-Entry',payload:newEntry})
   }
 
-  const setIsAddingEntry=(isAdding:boolean)=>{
-    dispatch({
-      type:'[Entry] - IsAdding-Entry',payload:isAdding
-    })
+  const refreshEntries=async()=>{
+    const {data} = await entriesApi.get<Entry[]>('/entries')
+    dispatch({type:'[Entry] - Refresh-Data',payload:data})
   }
 
-  const updateEntry=(entry:Entry)=>{
-    dispatch({type:'[Entry] - Entry-Updated',payload:entry})
-  }
+  useEffect(() => {
+    refreshEntries()
+  }, [])
 
   return (
     <EntriesContex.Provider value={{
