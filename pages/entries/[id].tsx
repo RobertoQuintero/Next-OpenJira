@@ -1,14 +1,25 @@
 import { Layout } from "@/components/layouts"
-import { EntryStatus } from "@/interfaces"
+import { EntriesContex } from "@/context/entries"
+import { dbEntries } from "@/database"
+import { Entry, EntryStatus } from "@/interfaces"
+import { dateFunctions } from "@/utils"
 import { DeleteOutlined, SaveOutlined } from "@mui/icons-material"
 import {capitalize, Button, Card, CardActions, CardContent, CardHeader, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, TextField, IconButton } from "@mui/material"
-import { ChangeEvent, useEffect, useMemo, useState } from "react"
+import { isValidObjectId } from "mongoose"
+import { GetServerSideProps } from "next"
+import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react"
 
 const validStatus:EntryStatus[]=['pending','in-progress','finished']
 
-const EntryPage = () => {
-  const [inputValue, setInputValue] = useState('')
-  const [status, setStatus] = useState<EntryStatus>('pending')
+interface Props{
+  entry:Entry
+}
+
+const EntryPage = ({entry}:Props) => {
+
+  const {updateEntry}=useContext(EntriesContex)
+  const [inputValue, setInputValue] = useState(entry.description)
+  const [status, setStatus] = useState<EntryStatus>(entry.status)
   const [touched, setTouched] = useState(false)
 
   const isNotValid=useMemo(() => !inputValue.length&&touched, [inputValue,touched])
@@ -21,10 +32,20 @@ const EntryPage = () => {
   }
   // useEffect(()=>{},[status])
 
-  const onSave=()=>{}
+  const onSave=()=>{
+    if(!inputValue.trim().length)return 
+    
+    const updatedEntry:Entry={
+      ...entry,
+      status,
+      description:inputValue
+    }
+
+    updateEntry(updatedEntry,true)
+  }
 
   return (
-    <Layout title="Entry...">
+    <Layout title={inputValue.substring(0,15)+' ...'}>
       <Grid
         container
         justifyContent='center'
@@ -33,8 +54,8 @@ const EntryPage = () => {
         <Grid item xs={12} sm={8} md={6}>
           <Card>
             <CardHeader 
-              title={`Entrada: ${inputValue}`}
-              subheader={`Creada hace ...`}
+              title={`Entrada: `}
+              subheader={`Creada ${dateFunctions.getFormatDistanceToNow(entry.createdAt)}`}
             />
             <CardContent>
               <TextField 
@@ -102,5 +123,30 @@ const EntryPage = () => {
   )
 }
 
+
+// You should use getServerSideProps when:
+// - Only if you need to pre-render a page whose data must be fetched at request time
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+
+  const {id}= ctx.params as {id:string}
+
+  const entry= await dbEntries.getEntryById(id)
+
+  if(!entry){
+    return{
+      redirect:{
+        destination:'/',
+        permanent:false
+      }
+    }
+  }
+
+  return {
+    props: {
+      entry
+    }
+  }
+}
 
 export default EntryPage
