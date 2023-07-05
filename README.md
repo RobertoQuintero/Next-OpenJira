@@ -20,6 +20,13 @@ docker stop entries-database
 mongodb://localhost:27017/entriesdb
 ```
 
+- Reconstruir lod modulos de Node y levantar Next
+
+```
+yarn install
+yarn dev
+```
+
 ## Configurar las variables de entorno
 
 Renombrar el archivo **.env.template** a **.env**
